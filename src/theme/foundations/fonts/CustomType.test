@@ -1,0 +1,52 @@
+// import { FC } from 'react'
+
+// import { Typography, useTheme } from '@mui/material'
+
+// // Headings
+// interface SemiProps {
+//     type: 'heading'
+//     size: '3Xl' | '2Xl' | 'Xl'
+//     weight: 'Bold'
+//     content: string
+// }
+
+// // Texts
+// interface TextProps {
+//     type: 'text'
+//     size: 'Xl' | 'Lg' | 'Md' | 'Sm' | 'Xs'
+//     weight: 'Regular' | 'Medium' | 'SemiBold' | 'Bold'
+//     content: string
+// }
+
+// interface DisplayProps {
+//     type: 'display'
+//     size: '4Xl' | '3Xl' | '2Xl' | 'Xl' | 'Lg' | 'Md' | 'Sm' | 'Xs'
+//     weight: 'Regular' | 'Medium' | 'SemiBold' | 'Bold'
+//     content: string
+// }
+
+// const CustomType: FC<SemiProps | TextProps | DisplayProps> = props => {
+//     const { type, size, weight, content } = props
+//     const theme = useTheme()
+
+//     const variant = theme.components.MuiTypography.variants.find(
+//         variantStyle => variantStyle.props.variant === `${type}${size}${weight}`
+//     )
+
+//     if (!variant) {
+//         throw new Error(
+//             `Variant ${variant} is not defined in theme.components.MuiTypography.variants`
+//         )
+//     }
+
+//     return (
+//         <Typography
+//             variant={variant.props.variant}
+//             variantMapping={variant.props.variantMapping}
+//         >
+//             {content}
+//         </Typography>
+//     )
+// }
+
+// export default CustomType

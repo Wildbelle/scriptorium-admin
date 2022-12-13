@@ -1,11 +1,20 @@
-import { ChakraProvider } from '@chakra-ui/react'
-import type { AppProps } from 'next/app'
-import '../styles/globals.css'
+import { FC } from 'react'
 
-export default function App({ Component, pageProps }: AppProps) {
-    return (
-        <ChakraProvider>
-            <Component {...pageProps} />
-        </ChakraProvider>
-    )
+import { EmotionCache } from '@emotion/react'
+import { AppProps } from 'next/app'
+
+import HeaderNavigation from '../src/components/Header/HeaderNavigation'
+import PageProvider from '../src/theme/helpers/PageProvider'
+
+export interface MUIAppProps extends AppProps {
+    emotionCache?: EmotionCache
 }
+
+const App: FC<MUIAppProps> = ({ Component, pageProps, emotionCache }) => (
+    <PageProvider emotionCache={emotionCache}>
+        <HeaderNavigation />
+        <Component {...pageProps} />
+    </PageProvider>
+)
+
+export default App
