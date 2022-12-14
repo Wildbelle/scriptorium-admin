@@ -1,5 +1,5 @@
 {
-  "name": "scriptorium",
+  "name": "scriptorium-admin",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -30,6 +30,7 @@
     "@mui/material": "^5.10.15",
     "@mui/styled-engine-sc": "^5.10.14",
     "@next/font": "^13.0.6",
+    "axios": "^1.2.1",
     "eslint": "8.27.0",
     "eslint-config-next": "13.0.2",
     "gsap": "^3.11.3",

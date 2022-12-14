@@ -1,6 +1,7 @@
 import * as React from 'react'
 
 import { Badge, Box, Button, IconButton, Menu, MenuItem } from '@mui/material'
+import { signOut } from 'next-auth/react'
 
 import {
     burgerMenu,
@@ -26,6 +27,11 @@ function NavbarDesktop() {
     const handleCloseNavMenu = () => {
         setAnchorElNav(null)
         setOpen(false)
+    }
+
+    const handleSignOut = () => {
+        handleCloseNavMenu()
+        signOut({ redirect: false })
     }
 
     return (
@@ -68,6 +74,13 @@ function NavbarDesktop() {
                             <NavItem name={page.name} linkTo={page.linkTo} />
                         </Button>
                     ))}
+                    <Button
+                        variant="underline"
+                        key={'logout'}
+                        onClick={handleSignOut}
+                    >
+                        LogOut
+                    </Button>
                 </Box>
                 <Box
                     sx={{

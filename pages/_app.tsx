@@ -10,7 +10,11 @@ export interface MUIAppProps extends AppProps {
     emotionCache?: EmotionCache
 }
 
-const App: FC<MUIAppProps> = ({ Component, pageProps, emotionCache }) => (
+const App: FC<MUIAppProps> = ({
+    Component,
+    pageProps: { session, ...pageProps },
+    emotionCache,
+}) => (
     <PageProvider emotionCache={emotionCache}>
         <HeaderNavigation />
         <Component {...pageProps} />
