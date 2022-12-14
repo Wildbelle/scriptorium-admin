@@ -1,29 +1,24 @@
-import About from './menu/About'
-import Cart from './product/Cart'
-import PrintKit from './product/Printkit'
-import Products from './product/Products'
-import Contact from './support/Contact'
-import Legal from './support/Legal'
-
-import Home from '.'
-
 export const routes = [
     // Menu
-    { name: 'Home', linkTo: '/', component: Home },
-    { name: 'About', linkTo: '/about', component: About },
+    { name: 'Home', linkTo: '/' },
+    { name: 'About', linkTo: '/about' },
     // Products
-    { name: 'Products', linkTo: '/products', component: Products },
-    { name: 'Print kit', linkTo: '/products/printkit', component: PrintKit },
-    { name: 'Panier', linkTo: '/cart', component: Cart },
+    { name: 'Products', linkTo: '/products' },
+    { name: 'Print kit', linkTo: '/products/printkit' },
+    { name: 'Panier', linkTo: '/cart' },
     // Support
-    { name: 'Contact', linkTo: '/contact', component: Contact },
-    { name: 'Legal', linkTo: '/legal', component: Legal },
+    { name: 'Contact', linkTo: '/contact' },
+    { name: 'Legal', linkTo: '/legal' },
 ]
 
 // Header navigation
-export const headerMenuLeft = [{ name: 'A propos', linkTo: '/about' }]
+export const headerMenuLeft = [
+    { name: 'Home', linkTo: '/' },
+    { name: 'A propos', linkTo: '/about' },
+]
 
 export const headerMenuRight = [
+    { name: 'Dashboard', linkTo: '/admin/dashboard' },
     { name: 'Commander', linkTo: '/#products' },
     { name: 'Print Kit', linkTo: '/products/printkit' },
 ]
@@ -36,6 +31,7 @@ export const burgerMenu = [
 ]
 
 export const burgerMenuLeft = [
+    { name: 'Home', linkTo: '/' },
     { name: 'A propos', linkTo: '/about' },
     { name: 'Studio', linkTo: '/https://www.studio-octopus.fr' },
     { name: 'Contact', linkTo: '/contact' },
