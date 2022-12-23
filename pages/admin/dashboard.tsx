@@ -11,9 +11,13 @@ import {
     useTheme,
 } from '@mui/material'
 import Head from 'next/head'
+import { useSelector } from 'react-redux'
+
+import { selectAuthState } from '../../src/store/authSlice'
 
 export default function Dashboard() {
     const theme = useTheme()
+    const authState = useSelector(selectAuthState)
 
     return (
         <Container

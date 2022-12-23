@@ -1,13 +1,15 @@
+import { useContext, useState } from 'react'
+
 import { useFormik } from 'formik'
-import type { NextPage } from 'next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useRouter } from 'next/router'
 
+import { AuthContext } from '../src/context/AuthContext'
 import { axiosInstance } from '../src/service/axios'
-import { login, selectAuthState } from '../src/store/authSlice'
 
-const Home: NextPage = () => {
-    const authState = useSelector(selectAuthState)
-    const dispatch = useDispatch()
+const Login = () => {
+    const [token, setToken] = useState()
+    const authContext = useContext(AuthContext)
+    const router = useRouter()
 
     const formik = useFormik({
         initialValues: {
@@ -20,12 +22,15 @@ const Home: NextPage = () => {
     })
 
     const handleSubmit = values => {
-        axiosInstance.post('/login', values).then(res => {
-            if (res.data) {
-                const { token, refresh_token } = res.data
-                dispatch(login({ token, refresh_token }))
-            }
-        })
+        axiosInstance
+            .post('/login', values)
+            .then(res => {
+                router.push('/admin/dashboard')
+                console.log(res)
+            })
+            .catch(err => {
+                console.log(err)
+            })
         // console.log(values)
     }
 
@@ -33,7 +38,7 @@ const Home: NextPage = () => {
         axiosInstance
             .get('/users', {
                 headers: {
-                    Authorization: `Bearer ${authState.token}`,
+                    Authorization: `Bearer ${token}`,
                 },
             })
             .then(res => {
@@ -43,10 +48,6 @@ const Home: NextPage = () => {
 
     return (
         <>
-            <div>
-                <div>{authState.isLogged ? 'Logged in' : 'Not Logged In'}</div>
-            </div>
-
             <form onSubmit={formik.handleSubmit}>
                 <div>
                     <label htmlFor="username">Username</label>
@@ -75,4 +76,4 @@ const Home: NextPage = () => {
     )
 }
 
-export default Home
+export default Login

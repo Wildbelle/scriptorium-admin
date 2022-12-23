@@ -12,15 +12,11 @@ export const routes = [
 ]
 
 // Header navigation
-export const headerMenuLeft = [
-    { name: 'Home', linkTo: '/' },
-    { name: 'A propos', linkTo: '/about' },
-]
+export const headerMenuLeft = [{ name: 'Home', linkTo: '/' }]
 
 export const headerMenuRight = [
-    { name: 'Dashboard', linkTo: '/admin/dashboard' },
-    { name: 'Commander', linkTo: '/#products' },
-    { name: 'Print Kit', linkTo: '/products/printkit' },
+    { name: 'Commandes', linkTo: '/admin/orders' },
+    { name: 'Produits', linkTo: '/admin/products' },
 ]
 
 // Burger navigation
@@ -33,7 +29,7 @@ export const burgerMenu = [
 export const burgerMenuLeft = [
     { name: 'Home', linkTo: '/' },
     { name: 'A propos', linkTo: '/about' },
-    { name: 'Studio', linkTo: '/https://www.studio-octopus.fr' },
+    { name: 'Studio', linkTo: 'https://www.studio-octopus.fr' },
     { name: 'Contact', linkTo: '/contact' },
 ]
 
@@ -48,7 +44,7 @@ export const footerMenuLeft = [
     { name: 'Produits', linkTo: '/products' },
     { name: 'Print kit', linkTo: '/products/printkit' },
     { name: 'A propos', linkTo: '/about' },
-    { name: 'Studio', linkTo: '/https://www.studio-octopus.fr' },
+    { name: 'Studio', linkTo: 'https://www.studio-octopus.fr' },
 ]
 
 export const footerMenuRight = [

@@ -1,13 +1,17 @@
-import { FC, useContext, useEffect } from 'react'
+import { FC, useEffect } from 'react'
 
 import { EmotionCache } from '@emotion/react'
 import type { NextComponentType } from 'next' //Import Component type
 import { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
+import { useDispatch, useSelector } from 'react-redux'
 
-import HeaderNavigation from '../src/components/Header/HeaderNavigation'
-import { AuthContext, AuthProvider } from '../src/context/AuthContext'
+import Footer from '../src/components/navigations/footer/Footer'
+import HeaderNavigation from '../src/components/navigations/header/HeaderNavigation'
+import { AuthProvider } from '../src/context/AuthContext'
 import { axiosInstance } from '../src/service/axios'
+import { login, selectAuthState } from '../src/store/authSlice'
+import { wrapper } from '../src/store/store'
 import PageProvider from '../src/theme/helpers/PageProvider'
 
 export interface MUIAppProps extends AppProps {
@@ -21,23 +25,23 @@ type CustomAppProps = AppProps &
     }
 
 const App: FC<CustomAppProps> = ({ Component, pageProps, emotionCache }) => {
+    const authState = useSelector(selectAuthState)
+    const dispatch = useDispatch()
     const router = useRouter()
-    const authContext = useContext(AuthContext)
 
     useEffect(() => {
         const handleRouteChange = (url: string) => {
-            if (url !== '/' && !authContext.authState.token) {
+            if (url !== '/' && !authState.isLogged) {
+                console.log(authState)
+
                 axiosInstance
-                    .get('/me')
+                    .post('/token/refresh', {
+                        refresh_token: authState.refresh_token,
+                    })
                     .then(res => {
                         //set redux store
                         if (res.data) {
-                            authContext.setAuthState({
-                                data: {
-                                    token: res.data.email,
-                                    refreshToken: res.data.email,
-                                },
-                            })
+                            dispatch(login(res.data))
                         }
                     })
                     .catch(err => {
@@ -49,15 +53,38 @@ const App: FC<CustomAppProps> = ({ Component, pageProps, emotionCache }) => {
         return () => {
             router.events.off('routeChangeStart', handleRouteChange)
         }
-    }, [])
+    }, [authState, dispatch, router])
+
+    useEffect(() => {
+        if (!authState.refresh_token) {
+            const refresh_token = localStorage.getItem('refresh_token')
+
+            if (refresh_token) {
+                axiosInstance
+                    .post('/token/refresh', {
+                        refresh_token: refresh_token,
+                    })
+                    .then(res => {
+                        //set redux store
+                        if (res.data) {
+                            dispatch(login(res.data))
+                        }
+                    })
+                    .catch(err => {
+                        router.push('/')
+                    })
+            }
+        }
+    }, [authState.refresh_token, dispatch, router])
     return (
         <AuthProvider>
             <PageProvider emotionCache={emotionCache}>
                 <HeaderNavigation />
                 <Component {...pageProps} />
+                <Footer />
             </PageProvider>
         </AuthProvider>
     )
 }
 
-export default App
+export default wrapper.withRedux(App)
