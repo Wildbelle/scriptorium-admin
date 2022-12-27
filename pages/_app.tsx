@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 
 import { EmotionCache } from '@emotion/react'
 import type { NextComponentType } from 'next' //Import Component type
@@ -6,11 +6,10 @@ import { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
 
-import Footer from '../src/components/navigations/footer/Footer'
 import HeaderNavigation from '../src/components/navigations/header/HeaderNavigation'
 import { AuthProvider } from '../src/context/AuthContext'
 import { axiosInstance } from '../src/service/axios'
-import { login, selectAuthState } from '../src/store/authSlice'
+import { getAll, login, logout } from '../src/store/authSlice'
 import { wrapper } from '../src/store/store'
 import PageProvider from '../src/theme/helpers/PageProvider'
 
@@ -21,27 +20,44 @@ export interface MUIAppProps extends AppProps {
 //Add custom appProp type then use union to add it
 type CustomAppProps = AppProps &
     MUIAppProps & {
-        Component: NextComponentType & { auth?: boolean } // add auth type
+        Component: NextComponentType // add auth type
     }
 
 const App: FC<CustomAppProps> = ({ Component, pageProps, emotionCache }) => {
-    const authState = useSelector(selectAuthState)
+    const { user, isLogged, token, refresh_token } = useSelector(getAll)
+    const [isLoggedIn, setIsLoggedIn] = useState(isLogged)
+    const [me, setMe] = useState(user)
     const dispatch = useDispatch()
     const router = useRouter()
 
+    const handleLogout = () => {
+        dispatch(logout())
+        setIsLoggedIn(false)
+        router.push('/')
+    }
+
     useEffect(() => {
         const handleRouteChange = (url: string) => {
-            if (url !== '/' && !authState.isLogged) {
-                console.log(authState)
-
+            if (url !== '/' && !isLoggedIn) {
                 axiosInstance
                     .post('/token/refresh', {
-                        refresh_token: authState.refresh_token,
+                        refresh_token: refresh_token,
                     })
                     .then(res => {
                         //set redux store
                         if (res.data) {
-                            dispatch(login(res.data))
+                            let stateData = res.data
+                            axiosInstance
+                                .get('/me', {
+                                    headers: {
+                                        Authorization: `Bearer ${token}`,
+                                    },
+                                })
+                                .then(res => {
+                                    stateData.user = res.data
+                                    console.log(stateData)
+                                })
+                            dispatch(login(stateData))
                         }
                     })
                     .catch(err => {
@@ -49,14 +65,15 @@ const App: FC<CustomAppProps> = ({ Component, pageProps, emotionCache }) => {
                     })
             }
         }
+        handleRouteChange(router.pathname)
         router.events.on('routeChangeStart', handleRouteChange)
         return () => {
             router.events.off('routeChangeStart', handleRouteChange)
         }
-    }, [authState, dispatch, router])
+    }, [isLoggedIn, router, dispatch, refresh_token, token])
 
     useEffect(() => {
-        if (!authState.refresh_token) {
+        if (!refresh_token) {
             const refresh_token = localStorage.getItem('refresh_token')
 
             if (refresh_token) {
@@ -67,7 +84,17 @@ const App: FC<CustomAppProps> = ({ Component, pageProps, emotionCache }) => {
                     .then(res => {
                         //set redux store
                         if (res.data) {
-                            dispatch(login(res.data))
+                            let stateData = res.data
+                            axiosInstance
+                                .get('/me', {
+                                    headers: {
+                                        Authorization: `Bearer ${token}`,
+                                    },
+                                })
+                                .then(res => {
+                                    stateData.user = res.data
+                                })
+                            dispatch(login(stateData))
                         }
                     })
                     .catch(err => {
@@ -75,13 +102,13 @@ const App: FC<CustomAppProps> = ({ Component, pageProps, emotionCache }) => {
                     })
             }
         }
-    }, [authState.refresh_token, dispatch, router])
+    }, [dispatch, refresh_token, router, token])
     return (
         <AuthProvider>
             <PageProvider emotionCache={emotionCache}>
                 <HeaderNavigation />
                 <Component {...pageProps} />
-                <Footer />
+                {/* <Footer /> */}
             </PageProvider>
         </AuthProvider>
     )

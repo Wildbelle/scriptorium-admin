@@ -12,7 +12,7 @@ export const routes = [
 ]
 
 // Header navigation
-export const headerMenuLeft = [{ name: 'Home', linkTo: '/' }]
+// export const headerMenuLeft = [{ name: 'Home', linkTo: '/' }]
 
 export const headerMenuRight = [
     { name: 'Commandes', linkTo: '/admin/orders' },

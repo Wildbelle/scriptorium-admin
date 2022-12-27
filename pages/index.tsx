@@ -1,12 +1,24 @@
+import { useEffect, useState } from 'react'
+
+import { Badge, Card, Typography } from '@mui/material'
 import { useFormik } from 'formik'
 import type { NextPage } from 'next'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { axiosInstance } from '../src/service/axios'
-import { login, selectAuthState } from '../src/store/authSlice'
+import {
+    getMe,
+    getTokens,
+    isLogged,
+    login,
+    logout,
+} from '../src/store/authSlice'
 
 const Home: NextPage = () => {
-    const authState = useSelector(selectAuthState)
+    const isLoggedIn = useSelector(isLogged)
+    const { token, refresh_token } = useSelector(getTokens)
+    const meRedux = useSelector(getMe)
+    const [me, setMe] = useState(meRedux)
     const dispatch = useDispatch()
 
     const formik = useFormik({
@@ -22,29 +34,52 @@ const Home: NextPage = () => {
     const handleSubmit = values => {
         axiosInstance.post('/login', values).then(res => {
             if (res.data) {
-                const { token, refresh_token } = res.data
-                dispatch(login({ token, refresh_token }))
+                const stateData = res.data
+                axiosInstance
+                    .get('/me', {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    })
+                    .then(res => {
+                        stateData.user = res.data
+                        dispatch(login(stateData))
+                    })
             }
         })
         // console.log(values)
     }
 
+    useEffect(() => {
+        if (isLoggedIn) {
+            axiosInstance
+                .get('/me', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                .then(res => {
+                    setMe(res.data)
+                })
+        }
+    }, [isLoggedIn, token])
+
     const fetchUsers = () => {
         axiosInstance
             .get('/users', {
                 headers: {
-                    Authorization: `Bearer ${authState.token}`,
+                    Authorization: `Bearer ${token}`,
                 },
             })
             .then(res => {
-                console.log(res)
+                console.log(res.data)
             })
     }
 
     return (
         <>
             <div>
-                <div>{authState.isLogged ? 'Logged in' : 'Not Logged In'}</div>
+                <div>{isLogged ? 'Logged in' : 'Not Logged In'}</div>
             </div>
 
             <form onSubmit={formik.handleSubmit}>
@@ -70,7 +105,43 @@ const Home: NextPage = () => {
                 </div>
                 <button type="submit">Login</button>
             </form>
+            <button
+                type="button"
+                onClick={() => {
+                    dispatch(logout())
+                }}
+            >
+                Logout
+            </button>
             <button onClick={fetchUsers}>Fetch Users</button>
+
+            {me ? (
+                <Card
+                    sx={{
+                        maxWidth: 345,
+                        display: 'flex',
+                        flexDirection: 'column',
+                    }}
+                >
+                    <Typography variant="textSmRegular">
+                        {me.firstname + ' ' + me.lastname}
+                    </Typography>
+                    <Typography variant="textSmRegular">{me.email}</Typography>
+                    {me.roles.map((role, index) => (
+                        <Badge key={index}>
+                            <Typography variant="textSmRegular" key={index}>
+                                {role}
+                            </Typography>
+                        </Badge>
+                    ))}
+                </Card>
+            ) : (
+                <Card sx={{ maxWidth: 345 }}>
+                    <Typography variant="textSmRegular">
+                        No user found
+                    </Typography>
+                </Card>
+            )}
         </>
     )
 }

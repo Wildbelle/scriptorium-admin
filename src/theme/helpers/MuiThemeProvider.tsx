@@ -1,6 +1,5 @@
 import { FC, useEffect, useState } from 'react'
 
-import { GlobalStyles } from '@mui/material'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { useTheme } from 'next-themes'
 

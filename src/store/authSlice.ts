@@ -4,7 +4,15 @@ import { HYDRATE } from 'next-redux-wrapper'
 import { AppState } from './store'
 
 // Type for our state
+export interface User {
+    id: number
+    firstname: string
+    lastname: string
+    email: string
+    roles: string[]
+}
 export interface AuthState {
+    user: User | null
     isLogged: boolean
     token?: string
     refresh_token?: string
@@ -15,6 +23,7 @@ const initialState: AuthState = {
     isLogged: false,
     token: '',
     refresh_token: '',
+    user: null,
 }
 
 // Actual Slice
@@ -33,6 +42,7 @@ export const authSlice = createSlice({
             state.isLogged = true
             state.token = action.payload.token
             state.refresh_token = action.payload.refresh_token
+            state.user = action.payload.user
             localStorage.setItem('token', action.payload.token)
             localStorage.setItem('refresh_token', action.payload.refresh_token)
         },
@@ -59,7 +69,28 @@ export const authSlice = createSlice({
 
 export const { setAuthState, login, logout } = authSlice.actions
 
-export const selectAuthState = (state: AppState) => {
+export const isLogged = (state: AppState) => {
+    return state.auth.isLogged
+}
+
+export const getUser = (state: AppState) => {
+    return state.auth.user
+}
+
+export const getTokens = (state: AppState) => {
+    return {
+        token: state.auth.token,
+        refresh_token: state.auth.refresh_token,
+    }
+}
+export const getAuth = (state: AppState) => {
+    return {
+        isLogged: state.auth.isLogged,
+        token: state.auth.token,
+        refresh_token: state.auth.refresh_token,
+    }
+}
+export const getAll = (state: AppState) => {
     return state.auth
 }
 

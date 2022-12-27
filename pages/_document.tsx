@@ -1,5 +1,5 @@
 import createEmotionServer from '@emotion/server/create-instance'
-import Document, { Html, Head, Main, NextScript } from 'next/document'
+import Document, { Head, Html, Main, NextScript } from 'next/document'
 
 import createEmotionCache from '../src/utils/createEmotionCache'
 

@@ -20,7 +20,7 @@
         "next-env.d.ts",
         "**/*.ts",
         "**/*.tsx",
-        "src/theme/foundations/fonts/CustomType.test"
+        "src/theme/foundations/fonts/CustomTypo.tsx"
     ],
     "exclude": ["node_modules"]
 }
