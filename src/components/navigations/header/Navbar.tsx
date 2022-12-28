@@ -66,7 +66,7 @@ function Navbar() {
     const theme = useTheme()
     const isLoggedIn = useSelector(isLogged)
 
-    return isLoggedIn ? (
+    return (
         <>
             <Toolbar
                 disableGutters
@@ -94,7 +94,7 @@ function Navbar() {
                         >
                             {theme.palette.mode === 'dark' ? (
                                 <Image
-                                    src="/media/logoLigh.svg"
+                                    src="/media/logoLight.svg"
                                     alt="Scriptorium Logo"
                                     width={116}
                                     height={32}
@@ -109,7 +109,7 @@ function Navbar() {
                             )}
                             <Box
                                 sx={{
-                                    display: { xs: 'none', md: 'flex' },
+                                    display: 'flex',
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                 }}
@@ -214,62 +214,6 @@ function Navbar() {
                 handleCloseSubNav={handleCloseSubNav}
             />
         </>
-    ) : (
-        <Toolbar disableGutters sx={{ zIndex: 99999, position: 'relative' }}>
-            <Container>
-                <Grid
-                    container
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '0 1rem ',
-                    }}
-                >
-                    <Grid
-                        item
-                        xs={12}
-                        md={12}
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: {
-                                xs: 'center',
-                                md: 'space-between',
-                            },
-                            alignItems: 'center',
-                            gap: '64px',
-                        }}
-                    >
-                        {theme.palette.mode === 'dark' ? (
-                            <Image
-                                src="/media/logoLight.svg"
-                                alt="Scriptorium Logo"
-                                width={116}
-                                height={32}
-                            />
-                        ) : (
-                            <Image
-                                src="/media/logoDark.svg"
-                                alt="Scriptorium Logo"
-                                width={116}
-                                height={32}
-                            />
-                        )}
-                        <Box
-                            sx={{
-                                display: { xs: 'none', md: 'flex' },
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }}
-                        >
-                            <ThemeUpdater />
-                        </Box>
-                    </Grid>
-                </Grid>
-            </Container>
-        </Toolbar>
     )
 }
 

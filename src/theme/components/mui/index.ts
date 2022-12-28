@@ -16,6 +16,10 @@ import MuiPaperStyleOverrides from './MuiPaper'
 import { MuiTabStyleOverrides } from './MuiTab'
 import { MuiTabsStyleOverrides } from './MuiTabs'
 import { MuiToolbarStyleOverrides } from './MuiToolbar'
+import {
+    MuiTypographyStylesOverrides,
+    MuiTypographyVariants,
+} from './MuiTypography'
 // import {
 //     MuiTypographyStyleOverrides,
 //     MuiTypographyVariants,
@@ -64,10 +68,10 @@ const components: ThemeOptions['components'] = {
     MuiAppBar: {
         styleOverrides: MuiAppBarStyleOverrides,
     },
-    // MuiTypography: {
-    //     styleOverrides: MuiTypographyStyleOverrides,
-    //     variants: MuiTypographyVariants,
-    // },
+    MuiTypography: {
+        styleOverrides: MuiTypographyStylesOverrides,
+        variants: MuiTypographyVariants,
+    },
     MuiContainer: {
         styleOverrides: MuiContainerStyleOverrides,
     },

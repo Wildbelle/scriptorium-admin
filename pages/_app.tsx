@@ -38,10 +38,13 @@ const App: FC<CustomAppProps> = ({ Component, pageProps, emotionCache }) => {
 
     useEffect(() => {
         const handleRouteChange = (url: string) => {
+            const token2 = token || localStorage.getItem('token')
+            const refresh_token2 =
+                refresh_token || localStorage.getItem('refresh_token')
             if (url !== '/' && !isLoggedIn) {
                 axiosInstance
                     .post('/token/refresh', {
-                        refresh_token: refresh_token,
+                        refresh_token: refresh_token2,
                     })
                     .then(res => {
                         //set redux store
@@ -50,7 +53,7 @@ const App: FC<CustomAppProps> = ({ Component, pageProps, emotionCache }) => {
                             axiosInstance
                                 .get('/me', {
                                     headers: {
-                                        Authorization: `Bearer ${token}`,
+                                        Authorization: `Bearer ${token2}`,
                                     },
                                 })
                                 .then(res => {
@@ -72,37 +75,6 @@ const App: FC<CustomAppProps> = ({ Component, pageProps, emotionCache }) => {
         }
     }, [isLoggedIn, router, dispatch, refresh_token, token])
 
-    useEffect(() => {
-        if (!refresh_token) {
-            const refresh_token = localStorage.getItem('refresh_token')
-
-            if (refresh_token) {
-                axiosInstance
-                    .post('/token/refresh', {
-                        refresh_token: refresh_token,
-                    })
-                    .then(res => {
-                        //set redux store
-                        if (res.data) {
-                            let stateData = res.data
-                            axiosInstance
-                                .get('/me', {
-                                    headers: {
-                                        Authorization: `Bearer ${token}`,
-                                    },
-                                })
-                                .then(res => {
-                                    stateData.user = res.data
-                                })
-                            dispatch(login(stateData))
-                        }
-                    })
-                    .catch(err => {
-                        router.push('/')
-                    })
-            }
-        }
-    }, [dispatch, refresh_token, router, token])
     return (
         <AuthProvider>
             <PageProvider emotionCache={emotionCache}>
